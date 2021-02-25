@@ -38,15 +38,19 @@ def get_saldo(fecha="date('now','+1 day')"):
 
     return saldo
 
-def get_total(tipo):
+def get_total(tipo, category=None):
     '''Devuelve la suma de gastos, ingresos o devoluciones en el mes actual en función del parámetro que se le pase.
     - tipo: El tipo de movimiento del que se quiere obtener el total ("ingreso", "gasto", "devolución")
     '''
+    category_str = ""
+
+    if category:
+        category_str = f"AND categoria = '{category}'"
+
     if tipo in ("ingreso", "gasto", "devolucion"):
         total = 0.0
-        fetch = []
 
-        c.execute(f"SELECT movimiento, tipo, fecha, categoria, subcategoria FROM balance WHERE fecha >= date('now','start of month') AND fecha <= date('now','start of month','+1 month','-1 day') ORDER BY fecha;")
+        c.execute(f"SELECT movimiento, tipo, fecha, categoria, subcategoria FROM balance WHERE fecha >= date('now','start of month') AND fecha <= date('now','start of month','+1 month','-1 day') {category_str} ORDER BY fecha;")
 
         for mov in c.fetchall():
             if mov[1] == tipo:

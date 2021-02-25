@@ -26,8 +26,12 @@ class GastosApp:
         self.frame_gastos = Frame(self.frame_master_arriba)
         self.l1 = Label(self.frame_ingresos, font=("Arial Bold", 12), text=f'Ingresos de {datetime.now().strftime("%B")}')
         self.l2 = Label(self.frame_ingresos, font=("Arial Bold", 12), text=str(db.get_total("ingreso")))
+        self.l1.bind('<Button-1>', lambda x: self.show_categories_list("ingreso"))
+        self.l2.bind('<Button-1>', lambda x: self.show_categories_list("ingreso"))
         self.l3 = Label(self.frame_gastos, font=("Arial Bold", 12), text=f'Gastos de {datetime.now().strftime("%B")}')
         self.l4 = Label(self.frame_gastos, font=("Arial Bold", 12), text=str(db.get_total("gasto")))
+        self.l3.bind('<Button-1>', lambda x: self.show_categories_list("gasto"))
+        self.l4.bind('<Button-1>', lambda x: self.show_categories_list("gasto"))
         self.treebox = Treeview(self.frame_master_arriba, columns=("Movimiento", "Categoría", "Subcategoría"))
         self.treebox_previous_month_button = Button(self.frame_master_arriba, text="Mes anterior", height = 2, width = 20)
         self.treebox_back_button = Button(self.frame_master_arriba, text="Atrás", height = 2, width = 20)
@@ -43,67 +47,112 @@ class GastosApp:
 
 
         self.category_buttons_ingreso, self.category_buttons_gasto = {}, {}
+        self.category_label_ingreso, self.category_label_gasto = {}, {}
 
         self.category_buttons_ingreso["Nómina"] = Button(self.frame_ingresos, text="Nómina", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Nómina", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Nómina", tipo="ingreso"))
         self.category_buttons_gasto["Nómina"] = Button(self.frame_gastos, text="Nómina", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Nómina", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Nómina", tipo="gasto"))
+        self.category_label_ingreso["Nómina"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Nómina")}')
+        self.category_label_gasto["Nómina"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Nómina")}')
 
         self.category_buttons_ingreso["Ingresos no nómina"] = Button(self.frame_ingresos, text="Ingresos no nómina", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Ingresos no nómina", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Ingresos no nómina", tipo="ingreso"))
         self.category_buttons_gasto["Ingresos no nómina"] = Button(self.frame_gastos, text="Ingresos no nómina", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Ingresos no nómina", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Ingresos no nómina", tipo="gasto"))
+        self.category_label_ingreso["Ingresos no nómina"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Ingresos no nómina")}')
+        self.category_label_gasto["Ingresos no nómina"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Ingresos no nómina")}')
 
         self.category_buttons_ingreso["Transportes y viajes"] = Button(self.frame_ingresos, text="Transportes y viajes", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Transportes y viajes", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Transportes y viajes", tipo="ingreso"))
         self.category_buttons_gasto["Transportes y viajes"] = Button(self.frame_gastos, text="Transportes y viajes", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="NómTransportes y viajesina", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="NómTransportes y viajesina", tipo="gasto"))
+        self.category_label_ingreso["Transportes y viajes"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Transportes y viajes")}')
+        self.category_label_gasto["Transportes y viajes"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Transportes y viajes")}')
 
         self.category_buttons_ingreso["Seguros"] = Button(self.frame_ingresos, text="Seguros", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Seguros", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Seguros", tipo="ingreso"))
         self.category_buttons_gasto["Seguros"] = Button(self.frame_gastos, text="Seguros", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Seguros", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Seguros", tipo="gasto"))
+        self.category_label_ingreso["Seguros"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Seguros")}')
+        self.category_label_gasto["Seguros"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Seguros")}')
 
         self.category_buttons_ingreso["Salud"] = Button(self.frame_ingresos, text="Salud", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Salud", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Salud", tipo="ingreso"))
         self.category_buttons_gasto["Salud"] = Button(self.frame_gastos, text="Salud", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Salud", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Salud", tipo="gasto"))
+        self.category_label_ingreso["Salud"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Salud")}')
+        self.category_label_gasto["Salud"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Salud")}')
 
         self.category_buttons_ingreso["Ocio"] = Button(self.frame_ingresos, text="Ocio", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Ocio", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Ocio", tipo="ingreso"))
         self.category_buttons_gasto["Ocio"] = Button(self.frame_gastos, text="Ocio", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Ocio", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Ocio", tipo="gasto"))
+        self.category_label_ingreso["Ocio"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Ocio")}')
+        self.category_label_gasto["Ocio"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Ocio")}')
 
         self.category_buttons_ingreso["Casa"] = Button(self.frame_ingresos, text="Casa", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Casa", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Casa", tipo="ingreso"))
         self.category_buttons_gasto["Casa"] = Button(self.frame_gastos, text="Casa", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Casa", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Casa", tipo="gasto"))
+        self.category_label_ingreso["Casa"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Casa")}')
+        self.category_label_gasto["Casa"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Casa")}')
 
         self.category_buttons_ingreso["Efectivo y pagos"] = Button(self.frame_ingresos, text="Efectivo y pagos", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Efectivo y pagos", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Efectivo y pagos", tipo="ingreso"))
         self.category_buttons_gasto["Efectivo y pagos"] = Button(self.frame_gastos, text="Efectivo y pagos", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Efectivo y pagos", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Efectivo y pagos", tipo="gasto"))
+        self.category_label_ingreso["Efectivo y pagos"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Efectivo y pagos")}')
+        self.category_label_gasto["Efectivo y pagos"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Efectivo y pagos")}')
 
         self.category_buttons_ingreso["Educación"] = Button(self.frame_ingresos, text="Educación", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Educación", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Educación", tipo="ingreso"))
         self.category_buttons_gasto["Educación"] = Button(self.frame_gastos, text="Educación", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Educación", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Educación", tipo="gasto"))
+        self.category_label_ingreso["Educación"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Educación")}')
+        self.category_label_gasto["Educación"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Educación")}')
 
         self.category_buttons_ingreso["Compras"] = Button(self.frame_ingresos, text="Compras", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Compras", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Compras", tipo="ingreso"))
         self.category_buttons_gasto["Compras"] = Button(self.frame_gastos, text="Compras", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Compras", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Compras", tipo="gasto"))
+        self.category_label_ingreso["Compras"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Compras")}')
+        self.category_label_gasto["Compras"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("gasto", category="Compras")}')
 
         self.category_buttons_ingreso["Otros"] = Button(self.frame_ingresos, text="Otros", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Otros", tipo="ingreso"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Otros", tipo="ingreso"))
         self.category_buttons_gasto["Otros"] = Button(self.frame_gastos, text="Otros", padx=5,
-            pady=5, width=15, height=2, command=lambda:self.detailed_view(category="Otros", tipo="gasto"))
+            pady=2, width=15, command=lambda:self.detailed_view(category="Otros", tipo="gasto"))
+        self.category_label_ingreso["Otros"] = Label(self.frame_ingresos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Otros")}')
+        self.category_label_gasto["Otros"] = Label(self.frame_gastos, font=("Arial Bold", 12), 
+            text=f'{db.get_total("ingreso", category="Otros")}')
 
 
         self.category_buttons_ingreso["Atras"] = Button(self.frame_ingresos, text="Atrás",
-        command=lambda: self.show_categories_list(back=True, tipo="ingreso"), padx=5, pady=5, width=15, height=2)
+        command=lambda: self.show_categories_list(back=True, tipo="ingreso"), padx=5, pady=2, width=15)
         self.category_buttons_gasto["Atras"] = Button(self.frame_gastos, text="Atrás", 
-        command=lambda: self.show_categories_list(back=True, tipo="gasto"), padx=5, pady=5, width=15, height=2)
+        command=lambda: self.show_categories_list(back=True, tipo="gasto"), padx=5, pady=2, width=15)
         self.window.title("GastosApp")
         self.window.state("zoomed")
         self.window.configure(bg='#a1f28e', pady=20, padx=20)
@@ -209,9 +258,8 @@ class GastosApp:
         if respuesta:
             try:   
                 float_movimiento = float(movimiento.replace(",","."))
-                
                 db.data_entry(obtener_fecha(fecha).strftime("%Y-%m-%d"), tipo, float_movimiento, category, subcategory)
-                
+                self.update_lbls()
                 #self.lbl_movimiento.grid(row=4, column=1, pady=10)
                 #self.lbl_movimiento.after(750, self.lbl_movimiento.grid_forget)
                 self.entry.delete(0,"end")
@@ -223,25 +271,40 @@ class GastosApp:
             except:
                 self.messagebox.showwarning(message="El valor no es correcto", title="Error")
 
+    def update_lbls(self):
+        self.l2.config(text=str(db.get_total("ingreso")))
+        self.l4.config(text=str(db.get_total("gasto")))
+        for lbl in self.category_label_ingreso:
+            self.category_label_ingreso[lbl].config(text=str(db.get_total("ingreso", category=lbl)))
+            self.category_label_gasto[lbl].config(text=str(db.get_total("gasto", category=lbl)))
+
     def show_categories_list(self, tipo, back=False):
         
         if tipo == "ingreso":
+            col = 0
             frame = self.frame_ingresos
             botones = self.category_buttons_ingreso
+            forget = self.frame_gastos
+            lbls = self.category_label_ingreso
         elif tipo == "gasto":
+            col = 2
             frame = self.frame_gastos
             botones = self.category_buttons_gasto
+            forget = self.frame_ingresos
+            lbls = self.category_label_gasto
 
         if not back:
-            i, j = 0, 0
+            forget.grid_forget()
+            i = 0
             for widget in frame.winfo_children():
                 widget.grid_forget()
-            for button in botones:
-                botones[button].grid(row=j, column=i%3, padx=10, pady=10)
+            for button in botones: 
+                botones[button].grid(row=i, column=0, padx=5, pady=10)
+                if button != "Atras":
+                    lbls[button].grid(row=i, column=2, padx=5, pady=10)
                 i += 1
-                if i%3 == 0:
-                    j += 1
         else:
+            forget.grid(row=0, column=col, columnspan=3, pady=5)
             for widget in frame.winfo_children():
                 widget.grid_forget()
             
@@ -250,6 +313,5 @@ class GastosApp:
     
     def detailed_view(self, category, tipo):
         detailed_view = DetailWindow(category=category, tipo=tipo)
-        print(category, tipo)
         detailed_view.detail()
         detailed_view.run()

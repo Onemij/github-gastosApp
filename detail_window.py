@@ -34,7 +34,6 @@ class DetailWindow():
         text = "\n\nMovimientos:\n"
         for mov in movs:
             text += str(mov[2]) + "\t\t\t" + str(mov[3]) + "\t\t\t" + str(mov[0]) + "\n"
-            print(mov)
         
         self.detail_lbl.config(text=text)
 
