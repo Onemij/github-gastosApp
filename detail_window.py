@@ -28,6 +28,8 @@ class DetailWindow():
         self.root.mainloop()
     
     def detail(self):
+        '''Muestra en la etiqueta detail_lbl los movimientos en formato "tabla"'''
+        
         movs = get_movs(tipo=self.tipo, category=self.category)
         text = "\n\nMovimientos:\n"
         for mov in movs:

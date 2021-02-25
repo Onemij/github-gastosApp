@@ -12,7 +12,14 @@ from detail_window import DetailWindow
 class GastosApp:
     
     def __init__(self) -> None:
+        db.create_table()
         self.window = Tk()
+        self.init_widgets()
+        self.frame_ingresos.bind('<Button-1>', lambda x: self.show_categories_list("ingreso"))
+        self.frame_gastos.bind('<Button-1>', lambda x: self.show_categories_list("gasto"))
+
+
+    def init_widgets(self):        
         self.frame_master_arriba = Frame(self.window)
         self.frame_master_abajo = Frame(self.window)
         self.frame_ingresos = Frame(self.frame_master_arriba)
@@ -97,7 +104,6 @@ class GastosApp:
         command=lambda: self.show_categories_list(back=True, tipo="ingreso"), padx=5, pady=5, width=15, height=2)
         self.category_buttons_gasto["Atras"] = Button(self.frame_gastos, text="Atrás", 
         command=lambda: self.show_categories_list(back=True, tipo="gasto"), padx=5, pady=5, width=15, height=2)
-
         self.window.title("GastosApp")
         self.window.state("zoomed")
         self.window.configure(bg='#a1f28e', pady=20, padx=20)
@@ -107,9 +113,7 @@ class GastosApp:
         self.frame_master_arriba.config(bg='#dfcc12', width=480, height=50, padx=50, pady=10)
         self.frame_master_arriba.grid(row=0, column=0, columnspan=3, pady=10)
         self.frame_ingresos.config(bg='#8cce7c', width=480, height=50)
-        self.frame_ingresos.bind('<Button-1>', lambda x: self.show_categories_list("ingreso"))
         self.frame_gastos.config(bg='#8cce7c', width=480, height=50)
-        self.frame_gastos.bind('<Button-1>', lambda x: self.show_categories_list("gasto"))
         self.frame_master_abajo.config(bg='#8cce7c', width=480, height=50, padx=10, pady=10)
         self.frame_master_abajo.grid(row=2, column=0, columnspan=3, pady=10)
         self.l1.config(width=20, bg='#8cce7c', fg='#fff')
@@ -187,7 +191,6 @@ class GastosApp:
 
         self.pack_frames_abajo_inicio()
         self.pack_frames_arriba_inicio()
-        db.create_table()
     
     def run(self):
         '''Llama al método "mainloop" de la ventana principal, iniciando la aplicación.
