@@ -36,7 +36,7 @@ class GastosApp:
         self.treebox_previous_month_button = Button(self.frame_master_arriba, text="Mes anterior", height = 2, width = 20)
         self.treebox_back_button = Button(self.frame_master_arriba, text="Atrás", height = 2, width = 20)
         self.treebox_next_month_button = Button(self.frame_master_arriba, text="Siguiente mes", height = 2, width = 20)
-        self.cal = Calendar(self.frame_master_abajo)
+        self.cal = Calendar(self.frame_master_abajo, date_pattern="dd/mm/yyyy")
         self.entry = Entry(self.frame_master_abajo, width=20)
         self.combo_categories = Combobox(self.frame_master_abajo, state="readonly", values=categories_list)
         self.combo_sub_categories = Combobox(self.frame_master_abajo, state="readonly", values=sub_categories_list["Nómina"])
@@ -258,6 +258,7 @@ class GastosApp:
         if respuesta:
             try:   
                 float_movimiento = float(movimiento.replace(",","."))
+                print(fecha)
                 db.data_entry(obtener_fecha(fecha).strftime("%Y-%m-%d"), tipo, float_movimiento, category, subcategory)
                 self.update_lbls()
                 #self.lbl_movimiento.grid(row=4, column=1, pady=10)
@@ -269,7 +270,7 @@ class GastosApp:
         
 
             except:
-                self.messagebox.showwarning(message="El valor no es correcto", title="Error")
+                messagebox.showwarning(message="El valor no es correcto", title="Error")
 
     def update_lbls(self):
         self.l2.config(text=str(db.get_total("ingreso")))
