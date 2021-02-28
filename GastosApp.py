@@ -1,6 +1,6 @@
 from tkinter import Frame, Tk, Label, Button, Entry, messagebox
 from tkinter.constants import RIGHT, LEFT
-from tkinter.ttk import Combobox, Treeview
+from tkinter.ttk import Combobox, Treeview, Style, Progressbar
 from new_constants import sub_categories_list, categories_list
 from tkcalendar import Calendar
 import base_datos as db
@@ -24,6 +24,26 @@ class GastosApp:
         self.frame_master_abajo = Frame(self.window)
         self.frame_ingresos = Frame(self.frame_master_arriba)
         self.frame_gastos = Frame(self.frame_master_arriba)
+        #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #Hay que configurar la barra de progreso para que se vea bien
+        s = Style()
+        s.theme_use('clam')
+        s.configure("TProgressbar", troughcolor='#8cce7c', background='#006400', bordercolor="#8cce7c",
+            darkcolor='#006400', lightcolor='#006400')
+        if db.get_total("ingreso") == 0:
+            self.pb1 = Progressbar(self.frame_ingresos, style="TProgressbar", orient ="horizontal",
+                length=480, mode="determinate", value=0)    
+            self.pb2 = Progressbar(self.frame_gastos, style="TProgressbar", orient ="horizontal",
+                length=480, mode="determinate", value=0)
+        else:
+            self.pb1 = Progressbar(self.frame_ingresos, style="TProgressbar", orient ="horizontal",
+                length=480, mode="determinate", value=db.get_total("ingreso")/db.get_total("ingreso")*100)    
+            self.pb2 = Progressbar(self.frame_gastos, style="TProgressbar", orient ="horizontal",
+                length=480, mode="determinate", value=db.get_total("gasto")/db.get_total("ingreso")*100)
+
+        self.pb1.grid(row=2, column=0, columnspan=3)  
+        self.pb2.grid(row=2, column=0, columnspan=3) 
+        #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         self.l1 = Label(self.frame_ingresos, font=("Arial Bold", 12), text=f'Ingresos de {datetime.now().strftime("%B")}')
         self.l2 = Label(self.frame_ingresos, font=("Arial Bold", 12), text=str(db.get_total("ingreso")))
         self.l1.bind('<Button-1>', lambda x: self.show_categories_list("ingreso"))
@@ -261,6 +281,7 @@ class GastosApp:
                 print(fecha)
                 db.data_entry(obtener_fecha(fecha).strftime("%Y-%m-%d"), tipo, float_movimiento, category, subcategory)
                 self.update_lbls()
+                self.update_bars()
                 #self.lbl_movimiento.grid(row=4, column=1, pady=10)
                 #self.lbl_movimiento.after(750, self.lbl_movimiento.grid_forget)
                 self.entry.delete(0,"end")
@@ -278,6 +299,10 @@ class GastosApp:
         for lbl in self.category_label_ingreso:
             self.category_label_ingreso[lbl].config(text=str(db.get_total("ingreso", category=lbl)))
             self.category_label_gasto[lbl].config(text=str(db.get_total("gasto", category=lbl)))
+    
+    def update_bars(self):
+        self.pb1.configure(value=db.get_total("ingreso")/db.get_total("ingreso")*100)    
+        self.pb2.configure(value=db.get_total("gasto")/db.get_total("ingreso")*100)
 
     def show_categories_list(self, tipo, back=False):
         
